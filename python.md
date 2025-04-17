@@ -13,3 +13,14 @@
 - virtualenv E:\venv\deepseek\Scripts
 - 进入到 E:\venv\deepseek\Scripts
 - activate 回车即可
+
+
+
+#### 生成**requirements.txt**文件
+
+```cmd
+pip freeze > requirements.txt
+
+pip install -r requirements.txt
+```
+

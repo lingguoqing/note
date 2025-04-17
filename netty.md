@@ -16,3 +16,6 @@
 
  ### 2.2 缓冲区（Buffer）
 
+
+
+NIO中的SererSocketChanner功能类似ServerSocket，SocketChanner功能类似Socket
