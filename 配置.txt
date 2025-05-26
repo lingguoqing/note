@@ -1,0 +1,7 @@
+DRIVER={Oracle in OraClient18Home1_32bit};DBQ=wfqlsv145.wfjt.com:1521/orcl.wfjt.com;Uid=WFJT;Pwd=WfEdcNutanix09;
+
+DRIVER={Oracle in OraClient18Home1_32bit};DBQ=wfqlsv237.wfjt.com:1521/orcl;Uid=WFJT;Pwd=Wfjt1234;
+
+WFJT/Wfjt1234@wfqlsv237.wfjt.com:1521/orcl
+
+\\172.19.2.222\d\Bosello\Visual Faris\Database\ProductionReport.mdb
