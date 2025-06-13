@@ -3,6 +3,10 @@
 ```cmd
  /home/wfadmin/elasticsearch-7.6.2/elasticsearch-7.6.2/bin/elasticsearch -d -p /home/wfadmin/elasticsearch-7.6.2/elasticsearch.pid
 kill -9 $(cat /home/wfadmin/elasticsearch-7.6.2/elasticsearch.pid)
+
+/home/wfadmin/java_jar/elasticsearch/elasticsearch-6.8.6/bin/elasticsearch -d -p /home/wfadmin/java_jar/elasticsearch/elasticsearch-6.8.6/elasticsearch.pid
+ 
+ kill -9 $(cat /home/wfadmin/java_jar/elasticsearch/elasticsearch-6.8.6/elasticsearch.pid)
 ```
 
 /home/wfadmin/elasticsearch-7.6.2/elasticsearch-7.6.2 ：对应自己的安装elasticsearch目录
@@ -97,6 +101,8 @@ sudo systemctl status nginx
 firewall-cmd --list-all
 #将80端口加入到防火墙放行白名单中，并重载防火墙
 firewall-cmd --add-port=80/tcp --permanent
+# 关闭端口
+sudo firewall-cmd --permanent --remove-port=80/tcp
 firewall-cmd --reload
 
 # 查看开放的端口号
@@ -104,5 +110,15 @@ firewall-cmd --list-all
 
 # 查看防火墙状态
 systemctl status firewalld
+```
+
+
+
+#### 服务启动与关闭
+
+```cmd
+nohup java -Xms128m -Xmx2048m -jar wfcrm-sendmsg-0.0.1-SNAPSHOT.jar> log.out  2>&1 &
+ps -ef | grep wfcrm-sendmsg-0.0.1-SNAPSHOT.jar 
+kill -9 端口
 ```
 
