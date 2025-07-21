@@ -26,3 +26,89 @@ spring  ai 官网
 
 # 工具调用（Tool Calling）
 
+
+
+# 聊天记忆（Chat Memory）
+
+- spring ai 官网：可即开即用的数据库有
+  - PostgreSQL
+  - MySQL / MariaDB
+  - SQL Server
+  - HSQLDB
+
+![image-20250721092423549](./ai.assets/image-20250721092423549.png)
+
+- 接口 ChatMemoryRepository
+
+![image-20250721092507669](./ai.assets/image-20250721092507669.png)
+
+- InMemoryChatMemoryRepository （在服务器重启后对于向ai问答的内容将不存在）
+
+基于内存的存储记忆，使用ConcurrentHashMap在内存中存储消息，
+
+- CassandraChatMemoryRepository、JdbcChatMemoryRepository、Neo4jChatMemoryRepository
+
+```yml
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-chat-memory-repository-jdbc</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-chat-memory-repository-cassandra</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ai</groupId>
+            <artifactId>spring-ai-starter-model-chat-memory-repository-neo4j</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+```
+
+- 对应的数据库表
+
+![image-20250721093340894](./ai.assets/image-20250721093340894.png)
+
+- 在引入项目后，如果数据库存在的话，会自动创建对应的表
+
+![image-20250721093624352](./ai.assets/image-20250721093624352.png)
+
+- 如何使用
+
+```java
+@Component
+public class MyChatMemory {
+
+    @Autowired
+    private JdbcChatMemoryRepository chatMemoryRepository;
+    
+    @Bean
+    public MessageWindowChatMemory memory() {
+        return MessageWindowChatMemory.builder().chatMemoryRepository(chatMemoryRepository).maxMessages(50).build();
+    }
+
+}
+
+@Component
+public class AiChatModel {
+
+    private ChatClient chatClient;
+    
+    @Autowired
+    public AiChatModel(MessageWindowChatMemory memory, ChatModel ollamaChatModel) {
+        this.chatClient = ChatClient.builder(ollamaChatModel)
+                .defaultOptions(
+                        ChatOptions.builder()
+                                .temperature(0.1)
+                                .build()
+                )
+                .defaultAdvisors(
+                        MessageChatMemoryAdvisor.builder(memory).build(), # 这个是使用mysql数据库作为聊天记忆
+                        new SimpleLoggerAdvisor()
+                )
+                .build();
+    }
+}
+```
+
