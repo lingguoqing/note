@@ -148,5 +148,6 @@ unset __conda_setup
 查看虚拟环境   conda env list  / conda info -e /  conda info --envs
 激活虚拟环境   conda activate env_name
 退出虚拟环境   conda deactivate env_name
+安装python   conda create --name 环境名称 python=python版本
 ```
 
