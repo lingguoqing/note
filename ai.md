@@ -112,3 +112,49 @@ public class AiChatModel {
 }
 ```
 
+
+
+# 工具使用
+
+#### 工具上下文使用 （注解可以看spring ai 官方文档：https://docs.spring.io/spring-ai/reference/api/tools.html#_tool_context）
+
+##### Spring AI 支持通过 API 向工具传递额外的上下文信息`ToolContext` 
+
+- 首先写一个工具类
+
+```java
+import org.springframework.ai.chat.model.ToolContext;
+import org.springframework.ai.tool.annotation.Tool;
+
+public class CustomerTools {
+
+    @Tool(description = "Retrieve customer information")
+    String getCustomerInfo(ToolContext toolContext) {
+        return (String) toolContext.getContext().get("tenantId");
+    }
+    
+}
+```
+
+- `ToolContext`使用提供的数据进行填充`ChatClient`。
+
+```java
+ private ChatClient chatClient;
+
+chatClient
+                .prompt() // 创建一个提示
+                .user(userInput) // 设置用户输入
+                .tools(new CustomerTools())
+                .toolContext(Map.of("tenantId", "acme")) // 工具上下文 提供额外的用户数据
+                .advisors(spec -> spec.param(CHAT_MEMORY_CONVERSATION_ID_KEY, conversationId)  // 设置会话ID
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100))  // 设置会话历史记录大小
+                .stream()
+                .content();
+```
+
+- 这样便可以在**getCustomerInfo**中获取到**tenantId**的信息了
+- 可以看下源码；**toolContext**中是Map，可以存放多条数据
+
+```
+ChatClientRequestSpec toolContext(Map<String, Object> toolContext);
+```
