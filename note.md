@@ -117,3 +117,20 @@ public class FilterConfig {
 
 
 # 最重要的一点就是查看官方文档
+
+
+
+# 依赖
+
+## url： https://central.sonatype.com/
+
+- dynamic-datasource
+
+```yml
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+    <version>4.3.1</version>
+</dependency>
+```
+

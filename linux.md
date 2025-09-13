@@ -150,4 +150,3 @@ unset __conda_setup
 退出虚拟环境   conda deactivate env_name
 安装python   conda create --name 环境名称 python=python版本
 ```
-
