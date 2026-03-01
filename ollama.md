@@ -1,0 +1,7 @@
+```ruby
+$env:OLLAMA_HOST="0.0.0.0"
+
+$env:OLLAMA_MAX_LOADED_MODELS="4"
+```
+
+OLLAMA_MAX_LOADED_MODELS
