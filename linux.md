@@ -133,9 +133,17 @@ source /etc/environment  配置环境
 export JAVA_HOME=/home/it/jdk/jdk-17.0.18
 export PATH="$PATH:${JAVA_HOME}/bin"
 
+export MAVEN_HOME=/home/maven/apache-maven-3.9.13
+export PATH="$PATH:${MAVEN_HOME}/bin"
+
+export SEATUNNEL_HOME=/home/seatunnel/backend/apache-seatunnel-2.3.12
+export PATH="$PATH:${SEATUNNEL_HOME}/bin"
+
  export PATH=/usr/bin:$PATH
 
 source ~/.bashrc 
+
+/etc/profile
 
  tar -xzvf wfql-smartfactory.tar.gz -C /home/it/service/wfql-smartfactory
  

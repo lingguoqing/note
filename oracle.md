@@ -52,3 +52,13 @@ exp system/123456(密码) owner=ling(用户名称) file=test.tmp(导出的文件
 imp syste/123456 file=test.tmp fromuser=ling
 ```
 
+
+
+- 查看**SQL**索引命中情况
+
+```sql
+EXPLAIN PLAN for   SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( SELECT id,programname,programcontent,programpath,deviceprogrampath,createtime,updatetime,isdelete,devices_id,deliverystatus,reasonfailure FROM QL_SF_FANUC_PROGRAM_LOG WHERE isdelete=0 AND (devices_id = '2028661473435353089') ORDER BY updatetime DESC ) TMP WHERE ROWNUM <=10) WHERE ROW_ID > 0
+
+select * from table(DBMS_XPLAN.display);
+```
+
