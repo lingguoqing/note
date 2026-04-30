@@ -14,6 +14,7 @@ select host,user,PASSWORD from user;
 
 GRANT SELECT ON machinecontroldb.* TO 'wfql'@'%';
 
+UPDATE mysql.user SET host = 'localhost'WHERE user = 'root' AND host = 'localhost';
 ```
 
 

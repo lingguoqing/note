@@ -235,3 +235,9 @@ WantedBy=multi-user.target
 Alias=xxljob.service
 ```
 
+
+
+### 命令使用
+
+- cat 文件 | grep '关键字' -C 10 （显示其前后 10 行内容）
+
