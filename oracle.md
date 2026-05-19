@@ -57,7 +57,7 @@ imp syste/123456 file=test.tmp fromuser=ling
 - 查看**SQL**索引命中情况
 
 ```sql
-EXPLAIN PLAN for   SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( SELECT id,programname,programcontent,programpath,deviceprogrampath,createtime,updatetime,isdelete,devices_id,deliverystatus,reasonfailure FROM QL_SF_FANUC_PROGRAM_LOG WHERE isdelete=0 AND (devices_id = '2028661473435353089') ORDER BY updatetime DESC ) TMP WHERE ROWNUM <=10) WHERE ROW_ID > 0
+EXPLAIN PLAN for SELECT * FROM ( SELECT TMP.*, ROWNUM ROW_ID FROM ( SELECT id,programname,programcontent,programpath,deviceprogrampath,createtime,updatetime,isdelete,devices_id,deliverystatus,reasonfailure FROM QL_SF_FANUC_PROGRAM_LOG WHERE isdelete=0 AND (devices_id = '2028661473435353089') ORDER BY updatetime DESC ) TMP WHERE ROWNUM <=10) WHERE ROW_ID > 0
 
 select * from table(DBMS_XPLAN.display);
 ```
@@ -168,7 +168,6 @@ BEGIN
         :NEW.字段名 := SYSDATE;
         :NEW.字段名 := SYSDATE;
     END IF;
-
     -- 更新操作：仅更新修改时间，创建时间保持不变
     IF UPDATING THEN
         :NEW.字段名 := SYSDATE;
@@ -195,5 +194,76 @@ WHERE id IN (
         WHERE t2.id <> dup.min_id
     ) tmp
 )
+```
+
+
+
+##### 增加表空间
+
+```sql
+ALTER TABLESPACE USERS (表空间类型) ADD DATAFILE 'D:\APP\ADMINISTRATOR\ORADATA\ORCL\USERS02.DBF' (存储位置) SIZE 32767M autoextend on next 100m maxsize UNLIMITED;
+```
+
+
+
+##### 查看表空间使用情况
+
+```sql
+SELECT 
+    df.tablespace_name tablespace_name,
+    df.file_name "数据文件名",
+    round(df.bytes/1024/1024,2) "文件大小(M)",
+    round(df.maxbytes/1024/1024,2) "最大可扩展大小(M)",
+    round((df.bytes - sum(nvl(fs.bytes,0)))/1024/1024,2) "已使用空间(M)",
+    round(sum(nvl(fs.bytes,0))/1024/1024,10) "剩余空间(M)",
+    round((1 - sum(nvl(fs.bytes,0))/df.bytes)*100,2) "使用率(%)"
+FROM 
+    dba_data_files df,
+    dba_free_space fs
+WHERE 
+    df.file_id = fs.file_id(+)  and (df.tablespace_name = 'USERS' or df.tablespace_name ='SYSTEM')
+GROUP BY 
+    df.tablespace_name, 
+    df.file_name,
+    df.bytes,
+    df.maxbytes
+ORDER BY 
+    df.tablespace_name, 
+    df.file_name;
+```
+
+
+
+##### 查看表属于那个表空间
+
+```sql
+SELECT table_name, tablespace_name FROM dba_tables WHERE tablespace_name = 'USERS'  AND  owner = 'WFJT';
+```
+
+
+
+##### 创建用户并赋予某张表的查询权限
+
+```sql
+-- 1. 创建用户
+CREATE USER 用户名 IDENTIFIED BY "密码" DEFAULT TABLESPACE USERS QUOTA UNLIMITED ON USERS;
+
+-- 2. 只授予登录权限
+GRANT CREATE SESSION TO 用户名;
+
+-- 3. 授予某张表的查询权限
+GRANT SELECT ON 表所有者.表名 TO 用户名;
+
+-- 查看所有用户基本信息
+SELECT USERNAME, ACCOUNT_STATUS, DEFAULT_TABLESPACE, TEMPORARY_TABLESPACE, CREATED, LOCK_DATE, EXPIRY_DATE, PROFILE 
+FROM DBA_USERS ORDER BY USERNAME;
+```
+
+
+
+```sql
+sqlplus sys/yc123456 as sysdba
+# 查看该用户的权限
+SELECT * FROM DBA_SYS_PRIVS WHERE GRANTEE = 'SA';
 ```
 
