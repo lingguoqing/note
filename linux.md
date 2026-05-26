@@ -34,7 +34,14 @@ tar -zxvf nginx-1.24.0.tar.gz
 cd nginx-1.24.0
 
 # 3. 配置
-./configure
+sudo ./configure --prefix=/usr/local/nginx
+
+./configure: error: the HTTP gzip module requires the zlib library.
+You can either disable the module by using --without-http_gzip_module
+option, or install the zlib library into the system, or build the zlib library
+statically from the source with nginx by using --with-zlib=<path> option.
+# 如果出现这些内容，使用下面这个命令
+sudo apt install zlib1g-dev
 
 # 4. 编译和安装
 make
@@ -237,7 +244,31 @@ Alias=xxljob.service
 
 
 
+##### 安装mysql
+
+```cmd
+sudo apt search mysql-server
+sudo apt install -y mysql-server-8.0
+sudo systemctl status mysql
+sudo mysql -uroot -p 
+cat  /etc/mysql/mysql.conf.d/mysqld.cnf
+sudo vim   /etc/mysql/mysql.conf.d/mysqld.cnf  # 修改配置文件
+sudo systemctl restart mysql
+```
+
+
+
 ### 命令使用
 
 - cat 文件 | grep '关键字' -C 10 （显示其前后 10 行内容）
+
+
+
+### ubuntu 防火墙配置
+
+```cmd
+sudo ufw allow from IP地址 to any port 端口 # 允许指定的IP访问指定端口
+sudo ufw delete 2 删除允许规则
+sudo ufw allow 端口 # 允许所有IP访问这个端口
+```
 
